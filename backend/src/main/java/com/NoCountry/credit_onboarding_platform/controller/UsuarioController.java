@@ -1,13 +1,23 @@
 package com.NoCountry.credit_onboarding_platform.controller;
 
+import com.NoCountry.credit_onboarding_platform.dto.AuthRequest;
+import com.NoCountry.credit_onboarding_platform.dto.AuthResponse;
 import com.NoCountry.credit_onboarding_platform.model.Usuario;
 import com.NoCountry.credit_onboarding_platform.model.Usuario.EstadoUsuario;
+import com.NoCountry.credit_onboarding_platform.security.JwtUtil;
 import com.NoCountry.credit_onboarding_platform.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -19,6 +29,15 @@ public class UsuarioController {
     
     @Autowired
     private UsuarioService usuarioService;
+    
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    
+    @Autowired
+    private UserDetailsService userDetailsService;
+    
+    @Autowired
+    private JwtUtil jwtUtil;
     
     // ========== CRUD Básico ==========
     
@@ -86,23 +105,53 @@ public class UsuarioController {
         }
     }
     
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> credentials) {
+     @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
         try {
-            String email = credentials.get("email");
-            String password = credentials.get("password");
+            // Autenticar usuario
+            Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                    authRequest.getEmail(),
+                    authRequest.getPassword()
+                )
+            );
             
-            Optional<Usuario> usuario = usuarioService.login(email, password);
+            // Cargar detalles del usuario
+            UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getEmail());
             
-            if (usuario.isPresent()) {
-                return ResponseEntity.ok(usuario.get());
-            } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("error", "Credenciales inválidas"));
-            }
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+            // Generar token JWT
+            Map<String, Object> extraClaims = new HashMap<>();
+            
+            // Obtener usuario completo
+            Usuario usuario = usuarioService.findByEmail(authRequest.getEmail())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            
+            extraClaims.put("rol", usuario.getRol().name());
+            extraClaims.put("userId", usuario.getId());
+            
+            String token = jwtUtil.generateToken(userDetails, extraClaims);
+            
+            // Crear respuesta
+            AuthResponse response = AuthResponse.fromUsuario(
+                usuario,
+                token,
+                jwtUtil.getExpirationTime()
+            );
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(Map.of("error", "Credenciales inválidas"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of("error", "Error al procesar el login: " + e.getMessage()));
         }
+    }
+    
+    // Agregar método para buscar por email
+    public Optional<Usuario> findByEmail(String email) {
+        return usuarioService.findByEmail(email);
     }
     
     @PutMapping("/{id}/estado")
