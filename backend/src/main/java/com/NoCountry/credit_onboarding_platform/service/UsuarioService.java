@@ -128,4 +128,8 @@ public class UsuarioService {
     public boolean existeEmail(String email) {
         return usuarioRepository.existsByEmail(email);
     }
+
+    public Optional<Usuario> findByEmail(String email) {
+    return usuarioRepository.findByEmail(email);
+}
 }
