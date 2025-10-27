@@ -1,23 +1,39 @@
+---
+import { SignOut } from 'auth-astro/components';
+---
+
 <header class="w-full bg-white shadow-md">
     <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
         
-        <a href="/" class="flex items-center space-x-2 text-blue-600 font-bold text-xl">
+        <a href="/" class="flex items-center space-x-2 text-[#1173D4] font-bold text-xl">
             <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 2L2 12l10 10 10-10L12 2zm0 14L6 10h12l-6 6z"/>
             </svg>
-            <span>FinanciaPro</span>
+            <span class="text-[#111827]">FinanciaPro</span>
         </a>
 
-        <div class="flex items-center space-x-6">
+        <div class="flex items-center space-x-6 relative">
             
             <div class="hidden sm:flex space-x-6 text-sm">
-                <a href="/cuenta" class="text-gray-600 hover:text-blue-600 font-medium transition duration-150">Cuenta</a>
-                <a href="/creditos" class="text-blue-600 font-bold transition duration-150">Créditos</a>
+                <a href="/cuenta" class="text-gray-600 hover:text-[#1173D4] font-medium transition duration-150">Cuenta</a>
+                <a href="/creditos" class="text-[#1173D4] font-bold transition duration-150">Créditos</a>
             </div>
 
-            <button class="flex items-center justify-center w-8 h-8 rounded-full bg-orange-300 text-white font-semibold overflow-hidden shadow-inner">
-                <img src="/placeholder-avatar.jpg" alt="Perfil" class="w-full h-full object-cover" /> 
+            <div class="relative">
+                <button
+                    class="flex items-center justify-center w-8 h-8 rounded-full bg-orange-300 text-white font-semibold overflow-hidden shadow-inner"
+                    onclick="document.getElementById('dropdown-menu').classList.toggle('hidden')"
+                >
+                    <img src="/placeholder-avatar.jpg" alt="Perfil" class="w-full h-full object-cover" />
                 </button>
+
+                <div
+                    id="dropdown-menu"
+                    class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg hidden"
+                >
+                    <SignOut class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Cerrar sesión</SignOut>
+                </div>
+            </div>
         </div>
     </nav>
 </header>

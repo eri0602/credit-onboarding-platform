@@ -3,12 +3,22 @@ import { defineConfig } from 'astro/config';
 
 import tailwindcss from '@tailwindcss/vite';
 
+import auth from 'auth-astro';
+
+import vercel from '@astrojs/vercel';
+
 // https://astro.build/config
 export default defineConfig({
+  output: "server",
+
   vite: {
     plugins: [tailwindcss()]
   },
+
   devToolbar: {
     enabled: false
-  }
+  },
+
+  integrations: [auth()],
+  adapter: vercel()
 });

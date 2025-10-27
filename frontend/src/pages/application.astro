@@ -2,14 +2,21 @@
 import Layout from '../layouts/Layout.astro';
 import ApplicationHeader from '../components/ApplicationHeader.astro';
 import CreditApplicationForm from '../components/CreditApplicationForm.astro';
+
+import { getSession } from 'auth-astro/server';
+const session = await getSession(Astro.request);
+
+if (!session) {
+    // Si la sesión no existe, redirige inmediatamente al usuario.
+    return Astro.redirect("/login"); 
+}
+
 ---
 
 <Layout title="FinanciaPro | Solicitud de Crédito">
-    
     <ApplicationHeader />
 
     <main class="bg-gray-50 min-h-screen">
         <CreditApplicationForm />
     </main>
-    
-    </Layout>
+</Layout>

@@ -1,143 +1,997 @@
 ---
-// Define el paso actual para simulación (en una app real, vendría de un estado/prop)
-const currentStep = 1; 
+// Definimos las variables para el progreso. El script JS se encarga de actualizarlas.
+const currentStep = 1;
 const totalSteps = 5;
 const progressPercentage = (currentStep / totalSteps) * 100;
----
-<section class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
 
+// Definimos el color de acento azul para consistencia
+const accentColor = "#1173D4";
+---
+
+<section class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
     <header class="text-center mb-8 mt-4">
-        <h1 class="text-3xl font-bold text-gray-900 mb-2">Solicitud de Crédito para PYMES</h1>
-        <p class="text-gray-500">Completa los siguientes pasos para solicitar un crédito. Puedes guardar tu progreso y regresar en cualquier momento.</p>
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">
+            Solicitud de Crédito para PYMES
+        </h1>
+        <p class="text-gray-500">
+            Completa los siguientes pasos para solicitar un crédito. Puedes
+            guardar tu progreso y regresar en cualquier momento.
+        </p>
     </header>
 
     <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-        <div class="flex justify-between items-center mb-2 text-sm font-semibold">
-            <span class="text-blue-600">Progreso</span>
-            <span class="text-gray-600" id="step-indicator">Paso {currentStep} de {totalSteps}</span>
+        <div
+            class="flex justify-between items-center mb-2 text-sm font-semibold"
+        >
+            <span style={`color: ${accentColor}`}>Progreso</span>
+            <span class="text-gray-600" id="step-indicator"
+                >Paso {currentStep} de {totalSteps}</span
+            >
         </div>
-        
+
         <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
-            <div 
-                class="bg-blue-600 h-2.5 rounded-full transition-all duration-500" 
-                style={`width: ${progressPercentage}%`}
+            <div
+                style={`background-color: ${accentColor}; width: ${progressPercentage}%;`}
+                class="h-2.5 rounded-full transition-all duration-500"
                 id="progress-bar"
-            ></div>
+            >
+            </div>
         </div>
-        
-        <p class="text-sm text-gray-500" id="section-title">Sección Actual: Información de la Empresa</p>
+
+        <p class="text-sm text-gray-500" id="section-title">
+            Sección Actual: Información de la Empresa
+        </p>
     </div>
 
     <form id="multi-step-form" method="POST" action="#">
         <div class="bg-white rounded-lg shadow-md p-8">
-            
-            <div class="form-step" id="step-1" data-section="Información de la Empresa">
-                <h2 class="text-2xl font-bold text-gray-800 border-b pb-4 mb-6">Información de la Empresa</h2>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6 mb-8">
-                    {/* Para mantener el código limpio, solo incluimos un par de campos */}
+            <div
+                class="form-step"
+                id="step-1"
+                data-section="Información de la Empresa"
+            >
+                <h2
+                    class="text-2xl font-bold text-gray-800 border-b border-[#E5E7EB] pb-4 mb-6"
+                >
+                    Información de la Empresa
+                </h2>
+
+                <div
+                    class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6 mb-8"
+                >
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Nombre de la Empresa</label>
-                        <input type="text" placeholder="Ingrese el nombre legal" required class="w-full p-3 bg-gray-100 border-none rounded-md placeholder:text-gray-400">
+                        <label
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                            >Nombre de la Empresa</label
+                        >
+                        <input
+                            type="text"
+                            name="nombre_empresa"
+                            placeholder="Ingrese el nombre legal"
+                            required
+                            class="w-full p-3 bg-gray-100 border-none rounded-md placeholder:text-gray-400"
+                        />
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">NIF</label>
-                        <input type="text" placeholder="Ingrese el NIF" required class="w-full p-3 bg-gray-100 border-none rounded-md placeholder:text-gray-400">
+                        <label
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                            >Número de Identificación Fiscal (NIF)</label
+                        >
+                        <input
+                            type="text"
+                            name="nif"
+                            placeholder="Ingrese el NIF"
+                            required
+                            class="w-full p-3 bg-gray-100 border-none rounded-md placeholder:text-gray-400"
+                        />
+                    </div>
+                    <div>
+                        <label
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                            >Dirección de la Empresa</label
+                        >
+                        <input
+                            type="text"
+                            name="direccion_empresa"
+                            placeholder="Ingrese la dirección"
+                            required
+                            class="w-full p-3 bg-gray-100 border-none rounded-md placeholder:text-gray-400"
+                        />
+                    </div>
+                    <div>
+                        <label
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                            >Año de Fundación</label
+                        >
+                        <input
+                            type="number"
+                            name="fundacion"
+                            placeholder="Ej: 2015"
+                            required
+                            class="w-full p-3 bg-gray-100 border-none rounded-md placeholder:text-gray-400"
+                        />
+                    </div>
+                    <div>
+                        <label
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                            >Sector de Actividad</label
+                        >
+                        <select
+                            name="sector"
+                            required
+                            class="w-full p-3 bg-gray-100 border-none rounded-md placeholder:text-gray-400 appearance-none cursor-pointer"
+                        >
+                            <option value="">Selecciona un sector</option>
+                            <option value="automotriz">Automotriz</option>
+                            <option value="retail">Retail</option>
+                            <option value="servicios">Servicios</option>
+                            <option value="manufactura">Manufactura</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                            >Número de Empleados</label
+                        >
+                        <input
+                            type="number"
+                            name="empleados"
+                            placeholder="Ingresa el número total"
+                            required
+                            class="w-full p-3 bg-gray-100 border-none rounded-md placeholder:text-gray-400"
+                        />
                     </div>
 
                     <div class="md:col-span-2">
-                        <h3 class="text-xl font-semibold text-gray-800 pt-4 pb-2">Datos del representante legal</h3>
+                        <h3
+                            class="text-xl font-semibold text-gray-800 border-t border-[#E5E7EB] pt-4 pb-2"
+                        >
+                            Datos del representante legal
+                        </h3>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Nombre Completo</label>
-                        <input type="text" placeholder="Ingrese el nombre completo" required class="w-full p-3 bg-gray-100 border-none rounded-md placeholder:text-gray-400">
+                        <label
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                            >Nombre Completo</label
+                        >
+                        <input
+                            type="text"
+                            name="nombre_representante"
+                            placeholder="Ingrese el nombre completo"
+                            required
+                            class="w-full p-3 bg-gray-100 border-none rounded-md placeholder:text-gray-400"
+                        />
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
-                        <input type="email" placeholder="Ingrese el correo electrónico" required class="w-full p-3 bg-gray-100 border-none rounded-md placeholder:text-gray-400">
+                        <label
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                            >Correo Electrónico</label
+                        >
+                        <input
+                            type="email"
+                            name="email_representante"
+                            placeholder="Ingrese el correo electrónico"
+                            required
+                            class="w-full p-3 bg-gray-100 border-none rounded-md placeholder:text-gray-400"
+                        />
+                    </div>
+                    <div>
+                        <label
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                            >Teléfono</label
+                        >
+                        <input
+                            type="tel"
+                            name="telefono_representante"
+                            placeholder="Ingrese el teléfono"
+                            required
+                            class="w-full p-3 bg-gray-100 border-none rounded-md placeholder:text-gray-400"
+                        />
                     </div>
                 </div>
             </div>
 
-            <div class="form-step hidden" id="step-2" data-section="Información Financiera">
-                <h2 class="text-2xl font-bold text-gray-800 border-b pb-4 mb-6">Información Financiera</h2>
-                
+            <div
+                class="form-step hidden"
+                id="step-2"
+                data-section="Información Financiera"
+            >
+                <h2 class="text-2xl font-bold text-gray-800 border-b border-[#E5E7EB] pb-4 mb-6">
+                    Información Financiera
+                </h2>
+
+                <div
+                    class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6 mb-8"
+                >
+                    <div>
+                        <label
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                            >Ingresos Anuales (USD)</label
+                        >
+                        <input
+                            type="text"
+                            name="ingresos_anuales"
+                            pattern="[0-9.,]+"
+                            placeholder="Ej: 500,000"
+                            required
+                            class="w-full p-3 bg-gray-100 border-none rounded-md placeholder:text-gray-400"
+                        />
+                    </div>
+                    <div>
+                        <label
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                            >Gastos Operativos (USD)</label
+                        >
+                        <input
+                            type="text"
+                            name="gastos_operativos"
+                            pattern="[0-9.,]+"
+                            placeholder="Ej: 300,000"
+                            required
+                            class="w-full p-3 bg-gray-100 border-none rounded-md placeholder:text-gray-400"
+                        />
+                    </div>
+                    <div>
+                        <label
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                            >Beneficio Neto (USD)</label
+                        >
+                        <input
+                            type="text"
+                            name="beneficio_neto"
+                            pattern="[0-9.,]+"
+                            placeholder="Ej: 200,000"
+                            required
+                            class="w-full p-3 bg-gray-100 border-none rounded-md placeholder:text-gray-400"
+                        />
+                    </div>
+                    <div>
+                        <label
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                            >Activos Totales (USD)</label
+                        >
+                        <input
+                            type="text"
+                            name="activos_totales"
+                            pattern="[0-9.,]+"
+                            placeholder="Ej: 1,000,000"
+                            required
+                            class="w-full p-3 bg-gray-100 border-none rounded-md placeholder:text-gray-400"
+                        />
+                    </div>
+                    <div>
+                        <label
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                            >Pasivos Totales (USD)</label
+                        >
+                        <input
+                            type="text"
+                            name="pasivos_totales"
+                            pattern="[0-9.,]+"
+                            placeholder="Ej: 400,000"
+                            required
+                            class="w-full p-3 bg-gray-100 border-none rounded-md placeholder:text-gray-400"
+                        />
+                    </div>
+                    <div>
+                        <label
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                            >Patrimonio Neto (USD)</label
+                        >
+                        <input
+                            type="text"
+                            name="patrimonio_neto"
+                            pattern="[0-9.,]+"
+                            placeholder="Ej: 600,000"
+                            required
+                            class="w-full p-3 bg-gray-100 border-none rounded-md placeholder:text-gray-400"
+                        />
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-bold text-gray-800 border-b border-[#E5E7EB] pb-4 mb-6">
+                    Referencias bancarias
+                </h3>
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Ventas Anuales (Último Año)</label>
-                        <input type="number" placeholder="Ingrese monto" required class="w-full p-3 bg-gray-100 border-none rounded-md placeholder:text-gray-400">
+                        <label
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                            >Nombre del Banco Principal</label
+                        >
+                        <input
+                            type="text"
+                            name="banco_principal"
+                            placeholder="Ingrese el nombre del banco"
+                            required
+                            class="w-full p-3 bg-gray-100 border-none rounded-md placeholder:text-gray-400"
+                        />
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Monto de Crédito Solicitado</label>
-                        <input type="number" placeholder="Ingrese monto" required class="w-full p-3 bg-gray-100 border-none rounded-md placeholder:text-gray-400">
+                        <label
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                            >Número de cuenta</label
+                        >
+                        <input
+                            type="text"
+                            name="numero_cuenta"
+                            placeholder="Ingrese el número de cuenta"
+                            pattern="[0-9.,]+"
+                            required
+                            class="w-full p-3 bg-gray-100 border-none rounded-md placeholder:text-gray-400"
+                        />
                     </div>
-                    {/* ... otros campos financieros */}
                 </div>
             </div>
 
+            <div
+                class="form-step hidden"
+                id="step-3"
+                data-section="Propósito del Crédito"
+            >
+                <h2 class="text-2xl font-bold text-gray-800 border-b border-[#E5E7EB] pb-4 mb-6">
+                    Propósito del Crédito
+                </h2>
+
+                <div class="space-y-6">
+                    <div>
+                        <label
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                            >Monto Solicitado (USD)</label
+                        >
+                        <input
+                            type="text"
+                            name="monto_solicitado"
+                            pattern="[0-9.,]+"
+                            placeholder="Ej: 500,000"
+                            required
+                            class="w-full p-3 bg-gray-100 border-none rounded-md placeholder:text-gray-400"
+                        />
+                    </div>
+
+                    <div>
+                        <label
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                            >Finalidad del Crédito</label
+                        >
+                        <select
+                            name="finalidad_credito"
+                            required
+                            class="w-full p-3 bg-gray-100 border-none rounded-md placeholder:text-gray-400 appearance-none cursor-pointer"
+                        >
+                            <option value="" disabled selected
+                                >Seleccione una opción</option
+                            >
+                            <option value="inventario"
+                                >Compra de inventario</option
+                            >
+                            <option value="maquinaria"
+                                >Adquisición de maquinaria</option
+                            >
+                            <option value="capital_trabajo"
+                                >Capital de trabajo</option
+                            >
+                        </select>
+                    </div>
+
+                    <div>
+                        <label
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                            >Descripción Detallada del Uso</label
+                        >
+                        <textarea
+                            name="descripcion_uso"
+                            placeholder="Ej: Compra de inventario para la temporada alta, adquisición de maquinaria nueva, etc."
+                            rows="4"
+                            required
+                            class="w-full p-3 bg-gray-100 border-none rounded-md placeholder:text-gray-400"
+                        ></textarea>
+                    </div>
+
+                    <div>
+                        <label
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                            >Plazo de Amortización Deseado</label
+                        >
+                        <select
+                            name="plazo_amortizacion"
+                            required
+                            class="w-full p-3 bg-gray-100 border-none rounded-md placeholder:text-gray-400 appearance-none cursor-pointer"
+                        >
+                            <option value="" disabled selected
+                                >Seleccione un plazo</option
+                            >
+                            <option value="12">12 meses</option>
+                            <option value="24">24 meses</option>
+                            <option value="36">36 meses</option>
+                        </select>
+                    </div>
+                </div>
             </div>
+
+            <div
+                class="form-step hidden"
+                id="step-4"
+                data-section="Carga de Documentos de Crédito"
+            >
+                <h2 class="text-2xl font-bold text-gray-800 border-b pb-4 mb-6">
+                    Carga de Documentos de Crédito
+                </h2>
+                <p class="text-gray-500 mb-6">
+                    Sube los documentos requeridos para completar tu solicitud.
+                </p>
+
+                <div class="space-y-6">
+                    <div class="border-b pb-4">
+                        <h3
+                            class="text-lg font-semibold text-gray-900 flex items-center mb-2"
+                        >
+                            <svg
+                                style={`color: ${accentColor}`}
+                                class="w-5 h-5 mr-2"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg"
+                                ><path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                                ></path></svg
+                            >
+                            Identificación
+                        </h3>
+                        <p class="text-sm text-gray-500 mb-3">
+                            Formatos aceptados: PDF. Tamaño máximo: 5MB
+                        </p>
+
+                        <div class="space-y-2">
+                            <div
+                                class="flex justify-between items-center bg-gray-50 p-3 rounded-md border border-gray-200"
+                            >
+                                <span
+                                    >Documento de identidad del representante
+                                    legal</span
+                                >
+                                <input
+                                    type="file"
+                                    name="doc_id_representante"
+                                    required
+                                    class="hidden"
+                                    id="file-id-1"
+                                    accept=".pdf,.jpg,.png"
+                                />
+                                <label
+                                    for="file-id-1"
+                                    class="cursor-pointer inline-flex items-center text-sm font-semibold py-1.5 px-3 rounded-md transition duration-200"
+                                    style={`background-color: ${accentColor}; color: white;`}
+                                >
+                                    <svg
+                                        class="w-4 h-4 mr-1.5"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        ><path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+                                        ></path></svg
+                                    >
+                                    Cargar
+                                </label>
+                            </div>
+                            <div
+                                class="flex justify-between items-center bg-gray-50 p-3 rounded-md border border-gray-200"
+                            >
+                                <span
+                                    >Documento de identidad del representante
+                                    legal (secundario)</span
+                                >
+                                <input
+                                    type="file"
+                                    name="doc_id_secundario"
+                                    required
+                                    class="hidden"
+                                    id="file-id-2"
+                                    accept=".pdf,.jpg,.png"
+                                />
+                                <label
+                                    for="file-id-2"
+                                    class="cursor-pointer inline-flex items-center text-sm font-semibold py-1.5 px-3 rounded-md transition duration-200"
+                                    style={`background-color: ${accentColor}; color: white;`}
+                                >
+                                    <svg
+                                        class="w-4 h-4 mr-1.5"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        ><path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+                                        ></path></svg
+                                    >
+                                    Cargar
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-b pb-4">
+                        <h3
+                            class="text-lg font-semibold text-gray-900 flex items-center mb-2"
+                        >
+                            <svg
+                                style={`color: ${accentColor}`}
+                                class="w-5 h-5 mr-2"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg"
+                                ><path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M12 6.253v13m0-13C10.832 5.477 9.201 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.801 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.8 5 16.5 5s3.332.477 4.5 1.253v13C19.832 18.477 18.199 18 16.5 18s-3.332.477-4.5 1.253"
+                                ></path></svg
+                            >
+                            Información legal de la empresa
+                        </h3>
+                        <p class="text-sm text-gray-500 mb-3">
+                            Formatos aceptados: PDF. Tamaño máximo: 5MB
+                        </p>
+
+                        <div class="space-y-2">
+                            <div
+                                class="flex justify-between items-center bg-gray-50 p-3 rounded-md border border-gray-200"
+                            >
+                                <span
+                                    >Certificado de existencia y representación
+                                    legal</span
+                                >
+                                <input
+                                    type="file"
+                                    name="doc_existencia"
+                                    required
+                                    class="hidden"
+                                    id="file-legal-1"
+                                    accept=".pdf"
+                                />
+                                <label
+                                    for="file-legal-1"
+                                    class="cursor-pointer inline-flex items-center text-sm font-semibold py-1.5 px-3 rounded-md transition duration-200"
+                                    style={`background-color: ${accentColor}; color: white;`}
+                                >
+                                    <svg
+                                        class="w-4 h-4 mr-1.5"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        ><path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+                                        ></path></svg
+                                    >
+                                    Cargar
+                                </label>
+                            </div>
+                            <div
+                                class="flex justify-between items-center bg-gray-50 p-3 rounded-md border border-gray-200"
+                            >
+                                <span>Escritura de constitución</span>
+                                <input
+                                    type="file"
+                                    name="doc_constitucion"
+                                    required
+                                    class="hidden"
+                                    id="file-legal-2"
+                                    accept=".pdf"
+                                />
+                                <label
+                                    for="file-legal-2"
+                                    class="cursor-pointer inline-flex items-center text-sm font-semibold py-1.5 px-3 rounded-md transition duration-200"
+                                    style={`background-color: ${accentColor}; color: white;`}
+                                >
+                                    <svg
+                                        class="w-4 h-4 mr-1.5"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        ><path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+                                        ></path></svg
+                                    >
+                                    Cargar
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-b pb-4">
+                        <h3
+                            class="text-lg font-semibold text-gray-900 flex items-center mb-2"
+                        >
+                            <svg
+                                style={`color: ${accentColor}`}
+                                class="w-5 h-5 mr-2"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg"
+                                ><path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m4 2h.01M17 14l2 2m0 0l-2 2m2-2h-5m-9-2a2 2 0 012-2h.01"
+                                ></path></svg
+                            >
+                            Información financiera básica
+                        </h3>
+                        <p class="text-sm text-gray-500 mb-3">
+                            Formatos aceptados: PDF. Tamaño máximo: 5MB
+                        </p>
+
+                        <div class="space-y-2">
+                            <div
+                                class="flex justify-between items-center bg-gray-50 p-3 rounded-md border border-gray-200"
+                            >
+                                <span>Estados financieros recientes</span>
+                                <input
+                                    type="file"
+                                    name="doc_estados_financieros"
+                                    required
+                                    class="hidden"
+                                    id="file-fin-1"
+                                    accept=".pdf"
+                                />
+                                <label
+                                    for="file-fin-1"
+                                    class="cursor-pointer inline-flex items-center text-sm font-semibold py-1.5 px-3 rounded-md transition duration-200"
+                                    style={`background-color: ${accentColor}; color: white;`}
+                                >
+                                    <svg
+                                        class="w-4 h-4 mr-1.5"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        ><path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+                                        ></path></svg
+                                    >
+                                    Cargar
+                                </label>
+                            </div>
+                            <div
+                                class="flex justify-between items-center bg-gray-50 p-3 rounded-md border border-gray-200"
+                            >
+                                <span>Extractos bancarios recientes</span>
+                                <input
+                                    type="file"
+                                    name="doc_extractos"
+                                    required
+                                    class="hidden"
+                                    id="file-fin-2"
+                                    accept=".pdf"
+                                />
+                                <label
+                                    for="file-fin-2"
+                                    class="cursor-pointer inline-flex items-center text-sm font-semibold py-1.5 px-3 rounded-md transition duration-200"
+                                    style={`background-color: ${accentColor}; color: white;`}
+                                >
+                                    <svg
+                                        class="w-4 h-4 mr-1.5"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        ><path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+                                        ></path></svg
+                                    >
+                                    Cargar
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pb-4">
+                        <h3
+                            class="text-lg font-semibold text-gray-900 flex items-center mb-2"
+                        >
+                            <svg
+                                style={`color: ${accentColor}`}
+                                class="w-5 h-5 mr-2"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg"
+                                ><path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                ></path></svg
+                            >
+                            Declaración de impuestos
+                        </h3>
+                        <p class="text-sm text-gray-500 mb-3">
+                            Formatos aceptados: PDF. Tamaño máximo: 5MB
+                        </p>
+
+                        <div class="space-y-2">
+                            <div
+                                class="flex justify-between items-center bg-gray-50 p-3 rounded-md border border-gray-200"
+                            >
+                                <span>Declaración de renta del último año</span>
+                                <input
+                                    type="file"
+                                    name="doc_declaracion_renta"
+                                    required
+                                    class="hidden"
+                                    id="file-tax-1"
+                                    accept=".pdf"
+                                />
+                                <label
+                                    for="file-tax-1"
+                                    class="cursor-pointer inline-flex items-center text-sm font-semibold py-1.5 px-3 rounded-md transition duration-200"
+                                    style={`background-color: ${accentColor}; color: white;`}
+                                >
+                                    <svg
+                                        class="w-4 h-4 mr-1.5"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        ><path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+                                        ></path></svg
+                                    >
+                                    Cargar
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="form-step hidden"
+                id="step-5"
+                data-section="Firma Digital del Contrato de Crédito"
+            >
+                <h2 class="text-2xl font-bold text-gray-800 border-b border-[#E5E7EB] pb-4 mb-6">
+                    Firma Digital del Contrato de Crédito
+                </h2>
+                <p class="text-gray-500 mb-6">
+                    Por favor, revise cuidadosamente el documento y firme a
+                    continuación para aceptar los términos y condiciones.
+                </p>
+
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">
+                    Contrato de Crédito
+                </h3>
+                <p class="text-sm text-gray-600 mb-4">
+                    Este es un documento legalmente vinculante. Asegúrese de
+                    entender todos los términos.
+                </p>
+
+                <blockquote
+                    class="bg-gray-50 p-4 border border-gray-200 rounded-md text-sm text-gray-700 mb-6 max-h-64 overflow-y-auto"
+                >
+                    <h4 class="font-bold mb-2">
+                        Términos y Condiciones del Préstamo
+                    </h4>
+                    <p class="mb-2">
+                        <span class="font-semibold"
+                            >1. Objeto del Contrato:</span
+                        > El presente contrato tiene por objeto regular las condiciones
+                        del crédito concedido por FinanciaPro (en adelante, el "Prestamista")
+                        a favor del cliente (en adelante, el "Prestatario").
+                    </p>
+                    <p class="mb-2">
+                        <span class="font-semibold">2. Monto del Crédito:</span>
+                        El monto del crédito asciende a la cantidad de [Monto del
+                        Crédito], que será desembolsado en la cuenta bancaria indicada
+                        por el Prestatario.
+                    </p>
+                    <p class="mb-2">
+                        <span class="font-semibold"
+                            >3. Plazo y Amortización:</span
+                        > El crédito deberá ser devuelto en un plazo de [Número de
+                        Cuotas] cuotas mensuales, iguales y consecutivas, que incluirán
+                        capital e intereses.
+                    </p>
+                    <p class="mb-2">
+                        <span class="font-semibold">4. Tasa de Interés:</span> La
+                        tasa de interés aplicable será del [Tasa de Interés]%.
+                    </p>
+                    <p>... [Continuar texto legal aquí] ...</p>
+                </blockquote>
+
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">
+                    Firma Electrónica
+                </h3>
+                <p class="text-sm text-gray-600 mb-2">
+                    Dibuje su firma en el recuadro. Esta firma tendrá la misma
+                    validez legal que una firma manuscrita.
+                </p>
+
+                <input
+                    type="hidden"
+                    name="signature_data"
+                    id="signature-data"
+                    required
+                    value=""
+                />
+                <div
+                    class="bg-white border border-dashed border-gray-400 rounded-md h-40 flex items-center justify-center mb-6"
+                >
+                    <span class="text-gray-400">Dibuje su firma aquí</span>
+                </div>
+
+                <div class="flex items-center mb-6">
+                    <input
+                        id="accept-terms"
+                        type="checkbox"
+                        name="accept_terms"
+                        required
+                        class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    <label
+                        for="accept-terms"
+                        class="ml-2 block text-sm text-gray-700"
+                    >
+                        He leído y acepto los <a
+                            href="#"
+                            style={`color: ${accentColor}`}
+                            class="font-medium hover:underline"
+                            >términos y condiciones</a
+                        > del contrato de crédito
+                    </label>
+                </div>
+            </div>
+        </div>
     </form>
-    
+
     <div class="text-center mt-10 mb-12 flex justify-center space-x-4">
-        
-        <button 
-            id="prev-button" 
-            class="hidden items-center bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-3 px-8 rounded-lg transition duration-300 shadow-lg text-lg"
+        <button
+            id="prev-button"
+            type="button"
+            class="hidden items-center justify-center bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 px-8 rounded-lg transition duration-300 text-lg"
         >
-            <svg class="w-5 h-5 mr-2 transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+            <svg
+                class="w-5 h-5 mr-2 transform rotate-180"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
             </svg>
             Anterior
         </button>
 
-        <button 
-            id="next-button" 
-            type="button" 
-            class="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg transition duration-300 shadow-lg text-lg"
+        <button
+            id="next-button"
+            type="button"
+            class="cursor-pointer inline-flex items-center hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg transition duration-300 shadow-lg text-lg"
+            style={`background-color: ${accentColor}`}
         >
-            Guardar y Continuar 
-            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+            Guardar y Continuar
+            <svg
+                class="w-5 h-5 ml-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
             </svg>
         </button>
     </div>
-
 </section>
 
 <script is:inline>
-    // Lógica de JavaScript para manejar la navegación entre pasos
-    const formSteps = document.querySelectorAll('.form-step');
-    const nextButton = document.getElementById('next-button');
-    const prevButton = document.getElementById('prev-button');
-    const progressBar = document.getElementById('progress-bar');
-    const stepIndicator = document.getElementById('step-indicator');
-    const sectionTitle = document.getElementById('section-title');
+    // Variables de configuración y elementos del DOM
+    const formSteps = document.querySelectorAll(".form-step");
+    const formElement = document.getElementById("multi-step-form");
+    const nextButton = document.getElementById("next-button");
+    const prevButton = document.getElementById("prev-button");
+    const progressBar = document.getElementById("progress-bar");
+    const stepIndicator = document.getElementById("step-indicator");
+    const sectionTitle = document.getElementById("section-title");
     const totalSteps = formSteps.length;
     let currentStepIndex = 0;
+    const accentColor = "#1173D4";
 
+    // Función de Validación: Solo valida los campos del paso actual
+    function validateCurrentStep() {
+        const currentStepElement = formSteps[currentStepIndex];
+        let isValid = true;
+
+        // Selecciona todos los inputs, textareas y selects requeridos dentro del paso actual
+        const requiredFields =
+            currentStepElement.querySelectorAll("[required]");
+
+        requiredFields.forEach((field) => {
+            // Utilizamos el método checkValidity() de cada elemento para la validación nativa
+            if (!field.checkValidity()) {
+                isValid = false;
+
+                // Si falla la validación, hacemos que el navegador muestre el mensaje de error nativo
+                if (!field.reportValidity()) {
+                    field.focus(); // Opcional: enfoca el campo para ayudar al usuario
+                }
+            }
+        });
+
+        // Si hay un error, isValid es false y el bucle anterior ya reportó el error al usuario.
+        return isValid;
+    }
+
+    // Función de Actualización de la Interfaz
     function updateUI() {
         // 1. Ocultar todos los pasos y mostrar solo el actual
         formSteps.forEach((step, index) => {
-            step.classList.toggle('hidden', index !== currentStepIndex);
+            step.classList.toggle("hidden", index !== currentStepIndex);
         });
 
         // 2. Actualizar la barra de progreso
         const progress = ((currentStepIndex + 1) / totalSteps) * 100;
         progressBar.style.width = `${progress}%`;
-        
+
         // 3. Actualizar el texto del indicador de progreso
         stepIndicator.textContent = `Paso ${currentStepIndex + 1} de ${totalSteps}`;
-        
+
         // 4. Actualizar el título de la sección
-        const currentSectionName = formSteps[currentStepIndex].getAttribute('data-section');
+        const currentSectionName =
+            formSteps[currentStepIndex].getAttribute("data-section");
         sectionTitle.textContent = `Sección Actual: ${currentSectionName}`;
 
         // 5. Mostrar/Ocultar botones de navegación
-        prevButton.classList.toggle('hidden', currentStepIndex === 0);
-        
-        // El botón "Guardar y Continuar" debe cambiar si es el último paso
+        prevButton.classList.toggle("hidden", currentStepIndex === 0);
+        prevButton.classList.toggle(
+            "inline-flex",
+            currentStepIndex > 0
+        );
+
+        // 6. Configurar el botón de avance (solo texto y estilo)
         if (currentStepIndex === totalSteps - 1) {
-            nextButton.textContent = 'Finalizar Solicitud';
+            nextButton.innerHTML = `Confirmar Firma 
+                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>`;
+            nextButton.style.backgroundColor = "green";
         } else {
             nextButton.innerHTML = `
                 Guardar y Continuar 
@@ -145,30 +999,76 @@ const progressPercentage = (currentStep / totalSteps) * 100;
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
                 </svg>
             `;
+            nextButton.style.backgroundColor = accentColor;
         }
     }
 
-    // Navegar al siguiente paso
-    nextButton.addEventListener('click', () => {
-        if (currentStepIndex < totalSteps - 1) {
-            // Aquí deberías añadir la lógica de validación del formulario del paso actual
-            currentStepIndex++;
-            updateUI();
-        } else {
-            // Último paso: Enviar el formulario
-            document.getElementById('multi-step-form').submit();
+    // Event Listener: Navegar al siguiente paso
+    nextButton.addEventListener("click", (e) => {
+        e.preventDefault();
+
+        // Solo avanza si el paso actual es válido
+        if (validateCurrentStep()) {
+            const isFinalStep = currentStepIndex === totalSteps - 1;
+
+            if (!isFinalStep) {
+                // Avanzar al siguiente paso
+                currentStepIndex++;
+                updateUI();
+            } else {
+                // Paso final: Enviar el formulario
+                alert("¡Formulario Completo! Enviando datos...");
+                // formElement.submit();
+            }
         }
     });
 
-    // Navegar al paso anterior
-    prevButton.addEventListener('click', () => {
+    // Event Listener: Navegar al paso anterior
+    prevButton.addEventListener("click", () => {
         if (currentStepIndex > 0) {
             currentStepIndex--;
             updateUI();
         }
     });
 
-    // Inicializar la interfaz al cargar la página
-    document.addEventListener('DOMContentLoaded', updateUI);
+    // Inicializar la interfaz y añadir el manejador de archivos al cargar la página
+    document.addEventListener("DOMContentLoaded", () => {
+        updateUI(); // Inicializa la UI
 
+        // === INICIO DE LA LÓGICA DE MANEJO DE ARCHIVOS CORREGIDA ===
+        const fileInputs = document.querySelectorAll('input[type="file"].hidden');
+
+        fileInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                // 'this' es el input[type="file"]
+                const label = document.querySelector(`label[for="${this.id}"]`);
+                const parentDiv = this.closest('.flex.justify-between.items-center');
+                const spanName = parentDiv.querySelector('span:first-child');
+                
+                if (this.files && this.files.length > 0) {
+                    // Muestra el nombre del archivo
+                    spanName.textContent = this.files[0].name;
+                    
+                    // Cambia el texto del botón a "Cargado" y el color a éxito (verde)
+                    label.innerHTML = `
+                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        Cargado
+                    `;
+                    label.style.backgroundColor = 'green';
+                } else {
+                    // Si el usuario cancela la selección o el archivo se borra (por si acaso)
+                    const defaultName = spanName.getAttribute('data-default-name') || 'Documento requerido';
+                    spanName.textContent = defaultName;
+                    
+                    // Restaura el botón a su estado original
+                    label.innerHTML = `
+                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                        Cargar
+                    `;
+                    label.style.backgroundColor = accentColor;
+                }
+            });
+        });
+        // === FIN DE LA LÓGICA DE MANEJO DE ARCHIVOS CORREGIDA ===
+    });
 </script>

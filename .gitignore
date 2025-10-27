@@ -21,6 +21,7 @@ Thumbs.db
 .env.development
 .env.production
 .env.test
+frontend\.env
 
 # =========================
 # 🧩 FRONTEND (Astro / Node)
