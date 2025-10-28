@@ -921,6 +921,26 @@ const accentColor = "#1173D4";
     </div>
 </section>
 
+<script>
+    const REDIRECT_URL = '/login';
+    
+        /**
+     * @function checkAndRedirectIfLoggedIn
+     * Verifica la existencia de un token en localStorage y redirige.
+     */
+    function checkAndRedirectIfLoggedIn(): void {
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            // Se encontró un token, asumimos que la sesión está activa y redirigimos.
+            // NOTA: Para máxima seguridad, este token debería validarse en el backend.
+            console.log('Token no encontrado, redirigiendo...');
+            window.location.replace(REDIRECT_URL); 
+        }
+    }
+
+    checkAndRedirectIfLoggedIn();
+</script>
+
 <script is:inline>
     // Variables de configuración y elementos del DOM
     const formSteps = document.querySelectorAll(".form-step");

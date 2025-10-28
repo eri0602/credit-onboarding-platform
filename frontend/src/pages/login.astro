@@ -6,10 +6,6 @@ import Footer from '../components/Footer.astro';
 import { getSession } from 'auth-astro/server';
 const session = await getSession(Astro.request);
 
-if (session) {
-    // Si la sesión existe, redirige inmediatamente al usuario.
-    return Astro.redirect("/application"); 
-}
 ---
 
 <Layout title="FinanciaPro | Inicia sesión">

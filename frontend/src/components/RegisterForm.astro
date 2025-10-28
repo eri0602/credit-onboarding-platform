@@ -29,11 +29,13 @@
             <p class="text-sm text-[#111827]">
                 Comienza a agilizar tus solicitudes de crédito.
             </p>
+            <p id="message" class="mt-2 text-sm font-medium"></p>
         </div>
 
-        <form method="POST" action="#">
+        <form id="register-form" onsubmit="handleRegister(event)">
             <div class="space-y-4">
                 <input
+                    name="companyName"
                     type="text"
                     placeholder="Nombre de la empresa"
                     required
@@ -41,6 +43,7 @@
                 />
 
                 <input
+                    name="cifNif"
                     type="text"
                     placeholder="CIF/NIF"
                     required
@@ -48,6 +51,7 @@
                 />
 
                 <input
+                    name="email"
                     type="email"
                     placeholder="Correo electrónico"
                     required
@@ -55,6 +59,7 @@
                 />
 
                 <input
+                    name="password"
                     type="password"
                     placeholder="Contraseña"
                     required
@@ -64,6 +69,7 @@
 
             <button
                 type="submit"
+                id="register-button"
                 class="w-full mt-6 bg-[#1173D4] hover:bg-blue-700 text-white font-semibold py-3 rounded-md transition duration-300 shadow-md hover:shadow-lg"
             >
                 Registrarse
@@ -82,3 +88,95 @@
         </div>
     </div>
 </section>
+
+<script>
+    // URL de tu API de Spring Boot
+    const API_REGISTER_URL = 'http://localhost:8080/api/usuarios/registro/cliente'; 
+    const REDIRECT_URL = '/application';
+
+    const messageElement = document.getElementById('message');
+    // CORRECCIÓN TS: Usamos 'as HTMLButtonElement | null' para acceder a .disabled
+    const registerButton = document.getElementById('register-button') as HTMLButtonElement | null; 
+
+    // CORRECCIÓN TS: Tipado explícito de parámetros
+    function displayMessage(text: string, isError: boolean = false): void {
+        if (messageElement) {
+            messageElement.textContent = text;
+            messageElement.className = isError 
+                ? 'mt-2 text-sm font-medium text-red-600' 
+                : 'mt-2 text-sm font-medium text-green-600';
+        }
+    }
+
+
+        /**
+     * @function checkAndRedirectIfLoggedIn
+     * Verifica la existencia de un token en localStorage y redirige.
+     */
+    function checkAndRedirectIfLoggedIn(): void {
+        const token = localStorage.getItem('authToken');
+        if (token) {
+            // Se encontró un token, asumimos que la sesión está activa y redirigimos.
+            // NOTA: Para máxima seguridad, este token debería validarse en el backend.
+            console.log('Token encontrado, redirigiendo...');
+            window.location.replace(REDIRECT_URL); 
+        }
+    }
+
+    checkAndRedirectIfLoggedIn();
+
+    async function handleRegister(event: Event): Promise<void> {
+        event.preventDefault();
+        
+        // Comprobar si el botón existe antes de intentar deshabilitarlo
+        if (!registerButton) return;
+
+        registerButton.disabled = true;
+        displayMessage('Registrando...', false);
+
+        const form = event.currentTarget as HTMLFormElement;
+        const formData = new FormData(form);
+        
+        // Mapeo de los campos a un objeto JSON
+        const data = {
+            email: formData.get('email'),
+            password: formData.get('password'),
+            nombre: "nuevo",
+            rfc: formData.get('cifNif'),
+            razonSocial: formData.get('companyName'),
+        };
+
+        try {
+            const response = await fetch(API_REGISTER_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                displayMessage('¡Registro exitoso! Redirigiendo a Iniciar Sesión...', false);
+                setTimeout(() => {
+                    window.location.href = '/login'; 
+                }, 1500);
+            } else {
+                // Intenta leer el mensaje de error del servidor
+                const errorData = await response.json().catch(() => ({ message: response.statusText }));
+                displayMessage(`Error en el registro: ${errorData.message || 'Inténtalo de nuevo.'}`, true);
+                registerButton.disabled = false;
+            }
+        } catch (error) {
+            // Error de red (Spring Boot no está corriendo o CORS incorrecto)
+            console.error('Network or server error:', error);
+            displayMessage('Error de conexión. Asegúrate que la API está funcionando (http://localhost:8080).', true);
+            registerButton.disabled = false;
+        }
+    }
+
+    // Listener de evento, recomendado para Astro
+    const formElement = document.getElementById('register-form');
+    if (formElement) {
+        formElement.addEventListener('submit', handleRegister);
+    }
+</script>

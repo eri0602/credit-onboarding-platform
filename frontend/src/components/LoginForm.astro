@@ -1,5 +1,6 @@
 ---
-import { SignIn } from 'auth-astro/components';
+// Si usas auth-astro, debes descomentar esta línea y configurarlo correctamente:
+// import { SignIn } from 'auth-astro/components'; 
 ---
 
 <section
@@ -33,15 +34,17 @@ import { SignIn } from 'auth-astro/components';
             <p class="text-sm text-[#111827]">
                 Inicia sesión para acceder a tu cuenta.
             </p>
+            <p id="message" class="mt-2 text-sm font-medium"></p>
         </div>
 
         <form
+            id="login-form"
             method="POST"
             class="space-y-4"
-            onsubmit="handleLogin(event)"
         >
             <input
                 id="email"
+                name="email" 
                 type="email"
                 placeholder="Correo electrónico"
                 required
@@ -50,6 +53,7 @@ import { SignIn } from 'auth-astro/components';
 
             <input
                 id="password"
+                name="password"
                 type="password"
                 placeholder="Contraseña"
                 required
@@ -58,66 +62,12 @@ import { SignIn } from 'auth-astro/components';
 
             <button
                 type="submit"
+                id="login-button"
                 class="w-full mt-6 bg-[#1173D4] hover:bg-blue-700 text-white font-semibold py-3 rounded-md transition duration-300 shadow-md hover:shadow-lg"
             >
                 Iniciar Sesión
             </button>
         </form>
-
-        <SignIn
-            provider="google"
-            class="w-full bg-white border border-gray-300 rounded-md py-3 flex items-center justify-center text-sm font-medium text-[#111827] hover:bg-gray-100 transition duration-150 mt-4"
-        >
-            <img
-                src="/assets/google-icon.svg"
-                alt="Google Icon"
-                class="h-5 w-5 mr-2"
-            />
-            Iniciar sesión con Google
-        </SignIn>
-
-        <script>
-            async function handleLogin(event: Event) {
-                event.preventDefault();
-
-                const emailInput = document.getElementById('email') as HTMLInputElement | null;
-                const passwordInput = document.getElementById('password') as HTMLInputElement | null;
-
-                if (!emailInput || !passwordInput) {
-                    alert('Por favor, completa todos los campos.');
-                    return;
-                }
-
-                const email = emailInput.value;
-                const password = passwordInput.value;
-
-                try {
-                    const response = await fetch('http://localhost:8080/api/auth/login', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ email, password }),
-                    });
-
-                    if (!response.ok) {
-                        throw new Error('Credenciales inválidas');
-                    }
-
-                    const data = await response.json();
-
-                    // Almacenar el token o manejar la sesión según sea necesario
-                    localStorage.setItem('token', data.token);
-
-                } catch (error) {
-                    if (error instanceof Error) {
-                        alert(error.message);
-                    } else {
-                        alert('Ocurrió un error inesperado.');
-                    }
-                }
-            }
-        </script>
 
         <div class="flex justify-between items-center mt-6 text-sm">
             <div class="flex items-center">
@@ -141,7 +91,7 @@ import { SignIn } from 'auth-astro/components';
 
         <div class="text-center mt-6 text-sm">
             <p class="text-[#111827]">
-                ¿No tienes una cuenta? 
+                ¿No tienes una cuenta?
                 <a
                     href="/register"
                     class="text-[#1173D4] hover:text-[#111827] font-medium"
@@ -151,3 +101,115 @@ import { SignIn } from 'auth-astro/components';
         </div>
     </div>
 </section>
+
+<script>
+    const API_LOGIN_URL = 'http://localhost:8080/api/usuarios/login';
+    const REDIRECT_URL = '/application'; 
+
+    const messageElement = document.getElementById('message');
+    const loginButton = document.getElementById('login-button') as HTMLButtonElement | null;
+    const formElement = document.getElementById('login-form') as HTMLFormElement | null;
+    const emailInput = document.getElementById('email') as HTMLInputElement | null;
+    const passwordInput = document.getElementById('password') as HTMLInputElement | null;
+
+    function displayMessage(text: string, isError: boolean = false): void {
+        if (messageElement) {
+            messageElement.textContent = text;
+            messageElement.className = isError 
+                ? 'mt-2 text-sm font-medium text-red-600' 
+                : 'mt-2 text-sm font-medium text-green-600';
+        }
+    }
+
+    function restoreButton(): void {
+        if (loginButton) {
+            loginButton.disabled = false;
+            loginButton.textContent = 'Iniciar Sesión';
+        }
+    }
+
+        /**
+     * @function checkAndRedirectIfLoggedIn
+     * Verifica la existencia de un token en localStorage y redirige.
+     */
+    function checkAndRedirectIfLoggedIn(): void {
+        const token = localStorage.getItem('authToken');
+        if (token) {
+            // Se encontró un token, asumimos que la sesión está activa y redirigimos.
+            // NOTA: Para máxima seguridad, este token debería validarse en el backend.
+            console.log('Token encontrado, redirigiendo...');
+            window.location.replace(REDIRECT_URL); 
+        } else {
+            console.log('No se encontró token, permanecer en la página de login.');
+        }
+    
+        checkAndRedirectIfLoggedIn();
+    }
+
+    async function handleLogin(event: Event) {
+        event.preventDefault();
+
+        if (!loginButton || !emailInput || !passwordInput) {
+            displayMessage('Error interno: Faltan elementos críticos del formulario.', true);
+            return;
+        }
+
+        loginButton.disabled = true;
+        loginButton.textContent = 'Verificando...';
+        displayMessage('Verificando credenciales...', false);
+
+        const email = emailInput.value;
+        const password = passwordInput.value;
+
+        try {
+            const response = await fetch(API_LOGIN_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                
+                // VERIFICAR NOMBRE DEL CAMPO: 'token', 'jwt', o 'accessToken'
+                const token = data.token || data.jwt || data.accessToken; 
+
+                if (token) {
+                    localStorage.setItem('authToken', token);
+                    displayMessage('Inicio de sesión exitoso. Redirigiendo...', false);
+                    
+                    setTimeout(() => {
+                        window.location.href = REDIRECT_URL;
+                    }, 800); 
+                } else {
+                    displayMessage('Inicio de sesión exitoso, pero no se recibió el token de seguridad.', true);
+                    restoreButton();
+                }
+
+            } else {
+                let errorMessage = 'Credenciales incorrectas o usuario no encontrado.';
+                try {
+                    const errorData = await response.json();
+                    errorMessage = errorData.message || errorData.error || errorMessage;
+                } catch (e) {
+                    errorMessage = `Error ${response.status}: ${response.statusText}`;
+                }
+                
+                displayMessage(`Error de autenticación: ${errorMessage}`, true);
+                restoreButton();
+            }
+
+        } catch (error) {
+            console.error('Login network error:', error);
+            displayMessage('Error de conexión. ¿Está corriendo la API en http://localhost:8080?', true);
+            restoreButton();
+        }
+    }
+
+    // El Event Listener se añade aquí
+    if (formElement) {
+        formElement.addEventListener('submit', handleLogin);
+    }
+</script>

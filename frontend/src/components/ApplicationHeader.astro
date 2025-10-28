@@ -1,5 +1,5 @@
 ---
-import { SignOut } from 'auth-astro/components';
+// Eliminamos: import { SignOut } from 'auth-astro/components';
 ---
 
 <header class="w-full bg-white shadow-md">
@@ -29,11 +29,41 @@ import { SignOut } from 'auth-astro/components';
 
                 <div
                     id="dropdown-menu"
-                    class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg hidden"
+                    class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg hidden z-50"
                 >
-                    <SignOut class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Cerrar sesión</SignOut>
-                </div>
+                    <button
+                        id="signout-button"
+                        class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-150"
+                        type="button"
+                    >
+                        Cerrar sesión
+                    </button>
+                    </div>
             </div>
         </div>
     </nav>
 </header>
+
+<script>
+    // URL de redirección después de cerrar sesión
+    const LOGOUT_REDIRECT_URL = '/login';
+    const signoutButton = document.getElementById('signout-button');
+
+    function handleLogout(event: Event): void {
+        event.preventDefault();
+        
+        // 1. Borrar el token de autenticación
+        localStorage.removeItem('authToken');
+        
+        // Opcional: Si usas otros datos de sesión, bórralos aquí.
+        // localStorage.removeItem('userEmail'); 
+
+        // 2. Redirigir al usuario
+        window.location.href = LOGOUT_REDIRECT_URL;
+    }
+
+    // Añadir el Event Listener al botón
+    if (signoutButton) {
+        signoutButton.addEventListener('click', handleLogout);
+    }
+</script>

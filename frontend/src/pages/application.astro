@@ -6,10 +6,6 @@ import CreditApplicationForm from '../components/CreditApplicationForm.astro';
 import { getSession } from 'auth-astro/server';
 const session = await getSession(Astro.request);
 
-if (!session) {
-    // Si la sesión no existe, redirige inmediatamente al usuario.
-    return Astro.redirect("/login"); 
-}
 
 ---
 
