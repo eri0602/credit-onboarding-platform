@@ -1,0 +1,382 @@
+---
+// Configuramos para un formulario de un solo paso
+const currentStep = 1;
+const totalSteps = 1; // Solo un paso
+const progressPercentage = 100; // Siempre al 100%
+// Definimos el color de acento azul para consistencia
+const accentColor = "#1173D4";
+// Definición de las URLs
+const API_SUBMIT_URL = 'http://localhost:8080/api/solicitudes/crear';
+const REDIRECT_SUCCESS_URL = '/success';
+---
+
+<section class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
+    <header class="text-center mb-8 mt-4">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">
+            Solicitud de Crédito para PYMES
+        </h1>
+        <p class="text-gray-500">
+            Paso Único: Define el propósito de tu crédito y envíalo.
+        </p>
+    </header>
+
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <div
+            class="flex justify-between items-center mb-2 text-sm font-semibold"
+        >
+            <span style={`color: ${accentColor}`}>Progreso</span>
+            <span class="text-gray-600" id="step-indicator"
+                >Paso 1 de 1</span
+            >
+        </div>
+
+        <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
+            <div
+                style={`background-color: ${accentColor}; width: 100%;`}
+                class="h-2.5 rounded-full transition-all duration-500"
+                id="progress-bar"
+            >
+            </div>
+        </div>
+
+        <p class="text-sm text-gray-500" id="section-title">
+            Sección Actual: Propósito del Crédito
+        </p>
+    </div>
+
+    <form id="multi-step-form" method="POST">
+        <div class="bg-white rounded-lg shadow-md p-8">
+            
+            <div
+                id="step-3"
+                data-section="Propósito del Crédito"
+            >
+                <h2 class="text-2xl font-bold text-gray-800 border-b border-[#E5E7EB] pb-4 mb-6">
+                    Propósito del Crédito
+                </h2>
+
+                <div class="space-y-6">
+                    <div>
+                        <label
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                        >Monto Solicitado (USD)</label
+                        >
+                        <input
+                            type="text"
+                            name="monto_solicitado"
+                            pattern="[0-9.,]+"
+                            placeholder="Ej: 500,000"
+                            required
+                            class="w-full p-3 bg-gray-100 border-none rounded-md placeholder:text-gray-400"
+                        />
+                    </div>
+
+                    <div>
+                        <label
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                            >Finalidad del Crédito</label
+                        >
+                        <select
+                            name="finalidad_credito"
+                            required
+                            class="w-full p-3 bg-gray-100 border-none rounded-md placeholder:text-gray-400 appearance-none cursor-pointer"
+                        >
+                            <option value="" disabled selected
+                            >Seleccione una opción</option
+                            >
+                            <option value="inventario"
+                            >Compra de inventario</option
+                            >
+                            <option value="maquinaria"
+                                >Adquisición de maquinaria</option
+                            >
+                            <option value="capital_trabajo"
+                                >Capital de trabajo</option
+                            >
+                        </select>
+                    </div>
+
+                    <div>
+                        <label
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                            >Descripción Detallada del Uso</label
+                        >
+                        <textarea
+                            name="descripcion_uso"
+                            placeholder="Ej: Compra de inventario para la temporada alta, adquisición de maquinaria nueva, etc."
+                            rows="4"
+                            required
+                            class="w-full p-3 bg-gray-100 border-none rounded-md placeholder:text-gray-400"
+                        ></textarea>
+                    </div>
+
+                    <div>
+                        <label
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                        >Plazo de Amortización Deseado</label
+                        >
+                        <select
+                            name="plazo_amortizacion"
+                            required
+                            class="w-full p-3 bg-gray-100 border-none rounded-md placeholder:text-gray-400 appearance-none cursor-pointer"
+                        >
+                            <option value="" disabled selected
+                                >Seleccione un plazo</option
+                            >
+                            <option value="12">12 meses</option>
+                            <option value="24">24 meses</option>
+                            <option value="36">36 meses</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-10 mb-12 flex justify-center space-x-4">
+            <button
+                id="submit-button"
+                type="submit"
+                class="cursor-pointer inline-flex items-center hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg transition duration-300 shadow-lg text-lg"
+                style={`background-color: ${accentColor}`}
+            >
+                Enviar Solicitud
+                <svg
+                    class="w-5 h-5 ml-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M5 13l4 4L19 7"
+                    ></path>
+                </svg>
+            </button>
+        </div>
+        
+        <div id="form-message" class="text-center mt-4 text-sm font-medium"></div>
+    </form>
+</section>
+
+<script>
+    const REDIRECT_URL = '/login';
+    
+    function checkAndRedirectIfLoggedIn(): void {
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            console.log('Token no encontrado, redirigiendo a login...');
+            window.location.replace(REDIRECT_URL); 
+        }
+    }
+
+    checkAndRedirectIfLoggedIn();
+</script>
+
+<script is:inline>
+    // Variables y elementos del DOM
+    const formElement = document.getElementById("multi-step-form");
+    const submitButton = document.getElementById("submit-button");
+    const messageElement = document.getElementById("form-message");
+    const API_SUBMIT_URL = 'http://localhost:8080/api/solicitudes/crear';
+    const REDIRECT_SUCCESS_URL = '/success';
+    const accentColor = "#1173D4"; 
+
+    function displayMessage(text, isError = false) {
+        if (messageElement) {
+            messageElement.textContent = text;
+            messageElement.className = isError 
+                ? 'mt-4 text-sm font-medium text-red-600' 
+                : 'mt-4 text-sm font-medium text-green-600';
+        }
+    }
+    
+    function restoreButton() {
+        if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.innerHTML = `
+                Enviar Solicitud
+                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+            `;
+            submitButton.style.backgroundColor = accentColor;
+        }
+    }
+    
+    /**
+     * Helper para decodificar la parte del payload del JWT y obtener los datos.
+     */
+    function decodeJwtPayload(token) {
+        try {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+
+            return JSON.parse(jsonPayload);
+        } catch (e) {
+            return null;
+        }
+    }
+
+    async function handleSubmit(event) {
+        event.preventDefault();
+
+        // 1. Validar y deshabilitar botón
+        if (!formElement.checkValidity()) {
+            formElement.reportValidity();
+            return;
+        }
+        submitButton.disabled = true;
+        submitButton.textContent = 'Enviando...';
+        displayMessage('Procesando solicitud...', false);
+
+        // 2. Obtener Token y Cliente ID
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+             displayMessage('Error: No se encontró el token de autenticación. Inicie sesión.', true);
+             restoreButton();
+             return;
+        }
+        
+        const tokenPayload = decodeJwtPayload(token);
+        if (!tokenPayload) {
+             displayMessage('Error: El token de autenticación es inválido o corrupto.', true);
+             restoreButton();
+             return;
+        }
+
+        const clienteId = tokenPayload.userId; 
+
+        if (!clienteId) {
+             displayMessage('Error: El ID del cliente (userId) no se encontró en el token.', true);
+             restoreButton();
+             return;
+        }
+        
+       // 3. Preparar Payload y URL
+        const formData = new FormData(formElement);
+        
+        // ⭐ LÓGICA DE MONTO CORREGIDA Y SIMPLIFICADA PARA ENTEROS ⭐
+        // Usamos || '' para asegurarnos de que si get() devuelve null, sea un string vacío.
+        const montoRawInput = formData.get('monto_solicitado') || ''; 
+        
+        // Limpieza: solo permitimos dígitos (eliminamos cualquier cosa que no sea un número)
+        // Esto maneja correctamente entradas como '500000'
+        const cleanedMonto = montoRawInput.replace(/[^\d]/g, ''); 
+        
+        const montoValue = parseFloat(cleanedMonto);
+        
+        // 🚨 VERIFICA ESTOS VALORES EN LA CONSOLA DEL NAVEGADOR
+        console.log(`Monto Input: ${montoRawInput}`);
+        console.log(`Monto Limpio: ${cleanedMonto}`);
+        console.log(`Monto Float: ${montoValue}`);
+        // ----------------------------------------------------
+        
+        // Validación estricta: Si el valor es NaN (vacío o inválido), 0 o negativo.
+        if (isNaN(montoValue) || montoValue <= 0) {
+            // Verifica si el campo estaba vacío, para darle prioridad al mensaje de validación del navegador.
+            if (!montoRawInput || montoRawInput.trim() === '') {
+                 // Si está vacío, el navegador ya mostró el error de 'required'. Solo restauramos.
+            } else {
+                 displayMessage('Error: El monto solicitado es inválido. Por favor, ingrese un número positivo.', true);
+            }
+            restoreButton();
+            return; 
+        }
+
+        const plazoRaw = formData.get('plazo_amortizacion'); 
+        const finalidadRaw = formData.get('finalidad_credito');
+        // ... (El resto de la lógica de propósito y envío se mantiene igual)
+
+        let propositoApi = "";
+        switch(finalidadRaw) {
+            case "inventario":
+                propositoApi = "Compra de inventario";
+                break;
+            case "maquinaria":
+                propositoApi = "Adquisición de maquinaria";
+                break;
+            case "capital_trabajo":
+                propositoApi = "Capital de trabajo para expansión";
+                break;
+            default:
+                propositoApi = finalidadRaw;
+        }
+
+        // Asumimos que los valores por defecto deben enviarse para evitar el error 400 (Bad Request)
+        const ESTADO_INICIAL = 'PENDIENTE'; 
+        const PASO_ACTUAL_INICIAL = 1;
+
+        // PAYLOAD CORREGIDO PARA INCLUIR CAMPOS CLAVE
+        const payload = {
+            // ⭐ INCLUIMOS EL ID DEL CLIENTE EN EL BODY JSON ⭐
+            "cliente_id": clienteId,
+            
+            // Campos de Propósito del Crédito
+            "montoSolicitado": montoValue, 
+            "plazoMeses": parseInt(plazoRaw, 10), 
+            "proposito": propositoApi,
+            
+            // ⭐ INCLUIMOS CAMPOS CON VALORES INICIALES PARA SATISFACER NOT NULL ⭐
+            //"estado": ESTADO_INICIAL,
+            //"paso_actual": PASO_ACTUAL_INICIAL
+            
+            // Nota: otros campos como fechas y comentarios serán nulos o generados por el backend
+        };
+        
+        // Mantendremos el clienteId en el query param por si la API lo requiere allí.
+        const finalUrl = `${API_SUBMIT_URL}?clienteId=${clienteId}`;
+        
+        // 🚨 VERIFICA ESTE PAYLOAD FINAL EN LA CONSOLA
+        console.log("Payload Final:", payload);
+        // ----------------------------------------------------
+
+        try {
+            // 4. Petición POST
+            const response = await fetch(finalUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}` 
+                },
+                body: JSON.stringify(payload),
+            });
+
+            if (response.ok) {
+                // Éxito
+                displayMessage('Solicitud enviada con éxito. Redirigiendo...', false);
+                setTimeout(() => {
+                    window.location.href = REDIRECT_SUCCESS_URL;
+                }, 1000);
+
+            } else {
+                // Error de API
+                let errorText = 'Ocurrió un error al procesar su solicitud.';
+                try {
+                    const errorData = await response.json();
+                    errorText = errorData.message || errorData.error || errorText;
+                } catch (e) {
+                    errorText = `Error ${response.status}: ${response.statusText}`;
+                }
+                
+                displayMessage(`Error: ${errorText}`, true);
+                restoreButton();
+            }
+
+        } catch (error) {
+            console.error('Error de red al enviar solicitud:', error);
+            displayMessage('Error de conexión. Inténtelo de nuevo más tarde.', true);
+            restoreButton();
+        }
+    }
+
+    // Listener para el envío del formulario
+    if (formElement) {
+        formElement.addEventListener('submit', handleSubmit);
+    }
+</script>

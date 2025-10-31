@@ -1,0 +1,66 @@
+---
+// Definimos el color de acento y los enlaces por defecto
+const accentColor = "#1173D4";
+
+// Props que el componente acepta
+interface Props {
+    title?: string;
+    message?: string;
+    secondaryMessage?: string;
+    primaryLink?: string;
+    primaryText?: string;
+    secondaryLink?: string;
+    secondaryText?: string;
+}
+
+// Valores por defecto específicos para la Solicitud de Crédito
+const { 
+    title = "¡Solicitud Enviada!", 
+    message = "Hemos recibido su solicitud de crédito para PYMES. Su proceso ha sido registrado y está siendo revisado por nuestro equipo.", 
+    secondaryMessage = "Recibirá una notificación por correo electrónico tan pronto como haya novedades.",
+    primaryLink = "/", 
+    primaryText = "Volver al Inicio",
+    secondaryLink = "/dashboard",
+    secondaryText = "Ir a mis Solicitudes"
+} = Astro.props;
+---
+
+<div class="max-w-xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+    <div class="bg-white rounded-lg shadow-md p-8 sm:p-10 lg:p-12 text-center">
+        
+        <div class="mx-auto w-16 h-16 flex items-center justify-center rounded-full shadow-lg" style={`background-color: ${accentColor};`}>
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+        </div>
+
+        <h1 class="mt-6 text-3xl font-bold text-gray-900">
+            {title}
+        </h1>
+        
+        <p class="mt-4 text-gray-600">
+            {message}
+        </p>
+        
+        <p class="mt-2 text-sm text-gray-500">
+            {secondaryMessage}
+        </p>
+
+        <div class="mt-8">
+            <a 
+                href={primaryLink} 
+                class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-lg font-semibold rounded-lg shadow-lg text-white transition duration-300 w-full hover:bg-blue-700"
+                style={`background-color: ${accentColor};`}
+            >
+                {primaryText}
+            </a>
+        </div>
+        
+        <div class="mt-4">
+            <a href={secondaryLink} class="text-sm font-medium text-gray-700 hover:text-gray-900 transition duration-150">
+                {secondaryText}
+            </a>
+        </div>
+        
+    </div>
+</div>
