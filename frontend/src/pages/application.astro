@@ -3,11 +3,6 @@ import Layout from '../layouts/Layout.astro';
 import ApplicationHeader from '../components/ApplicationHeader.astro';
 import CreditApplicationForm from '../components/CreditApplicationForm.astro';
 import CreditApplicationTest from '../components/CreditApplicationTest.astro';
-
-import { getSession } from 'auth-astro/server';
-const session = await getSession(Astro.request);
-
-
 ---
 
 <Layout title="FinanciaPro | Solicitud de Crédito">

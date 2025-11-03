@@ -113,7 +113,8 @@ public class SecurityConfig {
                     "/api/usuarios/login",
                     "/api/usuarios/registro/cliente",
                     "/api/usuarios/registro/admin",
-                    "/api/usuarios/verificar-email"
+                    "/api/usuarios/verificar-email",
+                    "/api/usuarios/salute"   // <--- separado
                 ).permitAll()
                 
                 // Endpoints solo para ADMIN
@@ -133,7 +134,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
             .authenticationProvider(authenticationProvider())
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+           .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         
         return http.build();
     }

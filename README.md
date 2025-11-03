@@ -4,96 +4,35 @@ Este repositorio contiene el desarrollo de una **Plataforma Web de Onboarding de
 El objetivo es ofrecer a pequeñas y medianas empresas un proceso ágil, seguro y digital para la **solicitud, evaluación y aprobación de créditos**.
 
 ---
-
-## 📝 Descripción corta (Tagline)
-_Onboarding digital de créditos para PYMES: rápido, seguro y accesible._
-
----
-
-## 🌍 Contexto del Proyecto
-- **Vertical:** Web App  
-- **Sector de negocio:** Fintech  
-- **Semana:** 0 de 4  
-
-### Necesidad del cliente
-Las PYMES requieren **financiación rápida** y procesos de solicitud de crédito menos burocráticos.  
-Las entidades financieras necesitan:  
-- Recopilar y validar información de manera digital.  
-- Reducir los tiempos de aprobación.  
-- Mejorar la experiencia del usuario.  
-
-### Validación de mercado
-Las fintechs y bancos utilizan plataformas de banca digital para:  
-- Gestionar cuentas y transferencias.  
-- Solicitar créditos sin procesos complejos.  
-- Automatizar la evaluación del riesgo.  
-- Reducir tiempos de aprobación.  
-
-### Expectativa
-La aplicación permitirá que las PYMES puedan:  
-- Solicitar créditos.  
-- Cargar documentos.  
-- Firmar digitalmente.  
-- Consultar el estado de sus solicitudes en **tiempo real**.  
-
-Además, incluirá **paneles para operadores** con filtros y tareas.  
-
----
-
-## 📌 Funcionalidades
-
-### 🎯 Must-have
-- Registro de usuario y autenticación segura.  
-- Formulario dinámico que guarde avances.  
-- Carga de documentos y firma digital.  
-
-### 🌟 Nice-to-have
-- Pre-evaluación de riesgo basada en reglas simples o IA.  
-- Integración con sistemas contables de las PYMES.  
-- Chat de soporte (bot o humano).  
-
----
-
-## 🤝 Sprint 0 – Planificación inicial
-
-### Lo que se habló
-- Presentación del equipo: stacks actuales, lo que queremos aprender y experiencias previas.  
-- Revisión de formatos de simulaciones anteriores y sus beneficios.  
-- Discusión de pasos iniciales y alternativas de organización más allá de lo que provee la plataforma.  
-
-### Decisiones tomadas
-- Definir **arquitectura inicial** y diseño del sistema.  
-- Priorización de **historias de usuario** y funcionalidades.  
-- Revisión de métricas de NoCountry para comunicar nuestro valor.  
-- División de tareas y primeros commits.  
-- Definir la **distribución equitativa de entregables**.  
-
-### Lo que ya tenemos claro
-- **Stack Tecnológico**:  
-  - Frontend → `HTML`, `CSS`, `JavaScript`, `Astro`  
-  - Backend → `Java` con `Spring Boot` (con posibilidad de microservicios adicionales)  
-- **Comunicación**:  
-  - Principal → App de NoCountry  
-  - Secundaria → Discord (atentos al staff)  
-- **Repositorio**: incluirá documentación, proyectos y entregables.  
-
----
-
 ## 🛠️ Tecnologías a utilizar
 - **Frontend:** HTML, CSS, JavaScript, Astro  
-- **Backend:** Java, Spring Boot  
+- **Backend:** Java, Spring Boot, JWT  
 - **Control de versiones:** GitHub  
 - **Metodología:** Ágil (Scrum adaptado a la simulación)  
 
 ---
-
-## 📂 Estructura del Repositorio (propuesta inicial)
-- /frontend -> Código del cliente (Astro, HTML, CSS, JS)
-- /backend -> API y servicios en Java con Spring Boot
-- /docs -> Documentación y entregables
-- /projects -> Avances del proyecto y enlaces externos
-
 ---
+
+## 📂 Estructura general del proyecto
+La estructura principal del repositorio actualmente es la siguiente (resumen):
+
+- `backend/` — API y servicios en Java con Spring Boot
+	- `pom.xml` (gestión de dependencias y plugins)
+	- `src/main/java/com/NoCountry/credit_onboarding_platform/` (controladores, servicios, modelos, repositorios, config)
+	- `src/main/resources/application.properties`
+	- `Dockerfile`, `wait-for.sh` (para producción/contenedores)
+
+- `frontend/` — Sitio estático construido con Astro
+	- `package.json`, `tsconfig.json`, `astro.config.mjs`
+	- `src/` (componentes, layouts, páginas, estilos)
+	- `public/` (activos estáticos)
+	- `Dockerfile`, `nginx.conf` (para construir y servir con Nginx)
+
+- `docker-compose.yml` — Orquestación local de frontend, backend y DB
+- `README.md` — Documentación (este archivo)
+
+> Nota: Esta estructura está sincronizada con la codebase actual en la rama `main`.
+
 
 ## 📊 Métricas y Valor
 El sistema de métricas de NoCountry será clave para:  
@@ -105,6 +44,86 @@ El sistema de métricas de NoCountry será clave para:
 
 ## 📎 Recursos y enlaces
 - [Diseño en Figma](https://www.figma.com/design/VAEthqQolIekuPQCAQNPsm/NoCountry-WebApp?node-id=0-1&t=hnCu3Fpu1PKFsU7i-1)  
+
+---
+
+## ▶️ Tutorial para correr el proyecto (Docker) — PowerShell (Windows)
+Sigue estos pasos para levantar el sistema en tu máquina usando Docker Desktop / Docker Compose.
+
+1) Requisitos
+- Docker Desktop instalado y corriendo (https://www.docker.com/get-started)
+- Docker Compose (incluido en Docker Desktop moderno)
+
+2) Abrir PowerShell y moverse al proyecto
+
+```powershell
+cd "C:\Users\USER\Desktop\Proyecto Prestamos\credit-onboarding-platform"
+```
+
+3) Levantar los servicios con Docker Compose (modo producción)
+
+```powershell
+docker compose up -d --build
+```
+
+Esto hará un build multi-stage del `frontend` (Node/Astro → static) y del `backend` (Maven → JAR) y luego ejecutará los contenedores.
+
+4) Comprobaciones básicas
+- Ver estado de los servicios:
+
+```powershell
+docker compose ps
+```
+
+- Ver logs en vivo (por ejemplo backend):
+
+```powershell
+docker compose logs -f cop_backend
+```
+
+5) Acceder a la aplicación
+- Frontend (Nginx que sirve los archivos estáticos): http://localhost
+- Backend (Spring Boot): http://localhost:8080  (si expones 8080 en `docker-compose.yml`)
+
+6) Opcional: construir solo un servicio
+
+```powershell
+docker compose build backend
+docker compose up -d backend
+```
+
+7) Alternativa: construir localmente sin Docker
+
+- Backend (si tienes Maven localmente):
+
+```powershell
+cd backend
+# Si existe mvnw en el repo (Windows):
+.\mvnw.cmd -DskipTests package
+# O si tienes mvn en PATH:
+mvn -DskipTests package
+```
+
+- Frontend (local, para desarrollo):
+
+```powershell
+cd frontend
+npm ci
+npm run dev    # para desarrollo
+# o para build estático
+npm run build
+```
+
+8) Detener y limpiar contenedores
+
+```powershell
+docker compose down --volumes --remove-orphans
+```
+
+9) Solución de problemas comunes
+- Si `mvn` no está disponible en tu PATH, usa la opción Docker para construir el backend (comando `docker compose up --build`).
+- Si un puerto está en uso, verifica con `netstat -ano` o cierra la aplicación que lo esté usando.
+- Logs con `docker compose logs -f <service>`.
 
 ---
 

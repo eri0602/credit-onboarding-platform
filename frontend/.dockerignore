@@ -1,0 +1,14 @@
+# Frontend build dependencies and files that aren't needed in image
+node_modules/
+dist/
+.cache/
+.env
+.env.*
+*.log
+.DS_Store
+
+# Editor and OS files
+.vscode/
+.idea/
+*.swp
+*~

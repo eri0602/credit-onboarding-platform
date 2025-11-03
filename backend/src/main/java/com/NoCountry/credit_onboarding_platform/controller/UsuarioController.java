@@ -204,4 +204,9 @@ public class UsuarioController {
         boolean existe = usuarioService.existeEmail(email);
         return ResponseEntity.ok(Map.of("existe", existe));
     }
+
+    @GetMapping("/salute")
+    public ResponseEntity<String> salute() {
+        return ResponseEntity.ok("¡Hola!");
+    }
 }
